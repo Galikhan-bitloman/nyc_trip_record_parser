@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: debezium/postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=inventory
+  spark-master:
+    image: apache/spark:3.5.1
+
+    ports:
+      - "8181:8080"
+      - "7077:7077"
+    environment:
+      - SPARK_MODE=master
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+
+  spark-worker:
+      image: apache/spark:3.5.1
+
+      ports:
+        - "8182:8081"
+      environment:
+        - SPARK_MODE=worker
+        - SPARK_MASTER_URL=spark://spark-master:7077
+      depends_on:
+        - spark-master
+      command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
