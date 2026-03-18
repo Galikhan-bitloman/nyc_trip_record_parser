@@ -3,4 +3,4 @@ from data import data_reader
 
 
 
-data_reader.read_data(path='data/fhvhv_tripdata_2026-01.parquet')
+data_reader.insert_data(path='data/fhvhv_tripdata_2026-01.parquet')
